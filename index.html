@@ -1,12 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI API Test</title>
+    <style>
+        pre {
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
 <body>
-  <h1>Hi GPT</h1>
-  <a href="http://localhost:3000/test-openai">Request GPT</a>
+    <h1>OpenAI API Test</h1>
+    <input type="text" id="userInput" placeholder="Enter your message">
+    <button id="sendButton">Send</button>
+    <pre id="responseContainer"></pre>
+
+    <script>
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const responseContainer = document.getElementById('responseContainer');
+
+        sendButton.addEventListener('click', async () => {
+            const userMessage = userInput.value;
+            try {
+                const response = await fetch('/test-openai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const elem = document.createElement('div').textContent = JSON.stringify(data, null, 2);
+                    responseContainer.append(elem);
+                } else {
+                    responseContainer.textContent = 'Error: ' + response.status;
+                }
+            } catch (error) {
+                responseContainer.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
 </body>
 </html>

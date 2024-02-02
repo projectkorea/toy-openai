@@ -1,29 +1,26 @@
-import axios from 'axios';
+import OpenAI from 'openai';
 
-const headers = {
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${OPENAI_API_KEY}`,
-};
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-const getRequestPayload = (message) => {
-  return {
+async function getChatCompletion(content) {
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [{ role: 'user', content }],
     model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: message }],
     temperature: 0.7,
-  };
-};
+  });
+  return chatCompletion
+}
 
-const url = 'https://api.openai.com/v1/chat/completions';
-
-async function fetchOpenAIResponse(message) {
+async function getOpenAIChatResponse(content) {
   try {
-    const payload = getRequestPayload(message);
-    const response = await axios.post(url, payload, headers);
-    return response.data;
+    const result = getChatCompletion(content);
+    return result;
   } catch (error) {
     console.error('Error calling OpenAI API:', error);
     throw error;
   }
 }
 
-export { fetchOpenAIResponse };
+export { getOpenAIChatResponse };
