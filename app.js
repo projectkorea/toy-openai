@@ -31,8 +31,7 @@ app.post('/test-openai', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  // index.html을 보낸다
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/public' + '/index.html');
 });
 
 app.listen(port, () => {
